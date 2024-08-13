@@ -1,0 +1,30 @@
+For fully functional slash commands, there are three important pieces of code that need to be written. They are:
+
+The individual command files, containing their definitions and functionality.
+The command handler, which dynamically reads the files and executes the commands.
+The command deployment script, to register your slash commands with Discord so they appear in the interface.
+These steps can be done in any order, but all are required before the commands are fully functional.
+
+Example command file is ping.js (with comments)
+
+Command registration
+    Slash commands can be registered in two ways; in one specific guild, or for every guild the bot is in. We're going to look at single-guild registration first, as this is a good way to develop and test your commands before a global deployment.
+
+    Your application will need the applications.commands scope authorized in a guild for any of its slash commands to appear, and to be able to register them in a specific guild without error.
+
+    Slash commands only need to be registered once, and updated when the definition (description, options etc) is changed. As there is a daily limit on command creations, it's not necessary nor desirable to connect a whole client to the gateway or do this on every ready event. As such, a standalone script using the lighter REST manager is preferred.
+
+    This script is intended to be run separately, only when you need to make changes to your slash command definitions - you're free to modify parts such as the execute function as much as you like without redeployment.
+
+Global application commands will be available in all the guilds your application has the applications.commands scope authorized in, and in direct messages by default.
+
+    To deploy global commands, you can use the same script from the guild commands section and simply adjust the route in the script to .applicationCommands(clientId)
+
+    await rest.put(
+        Routes.applicationCommands(clientId),
+        { body: commands },
+    );
+
+Modals
+    You can have a maximum of five ActionRowBuilders per modal builder, and one TextInputBuilder within an ActionRowBuilder. 
+    Currently, you can only use TextInputBuilders in modal action rows builders.
