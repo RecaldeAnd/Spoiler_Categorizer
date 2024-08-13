@@ -8,17 +8,7 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-// When the client is ready, run this code (only once).
-// The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
-// It makes some properties non-nullable.
-client.once(Events.ClientReady, readyClient => {
-	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
-
-// Log in to Discord with your client's token
-client.login(token);
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
 
 // We recommend attaching a .commands property to your client instance 
 // so that you can access your commands in other files. The rest of the 
@@ -54,33 +44,23 @@ for (const folder of commandFolders) {
 	}
 }
 
-// To respond to a command, you need to create a listener for the Client#interactionCreate event that
-// will execute code when your application receives an interaction
-// needs to be async so we can use await below
-client.on(Events.InteractionCreate, async interaction => {
-    //Not every interaction is a slash command (e.g. MessageComponent interactions). Make sure to only handle 
-    // slash commands in this function by making use of the BaseInteraction#isChatInputCommand()
-    if (!interaction.isChatInputCommand()) return;
-	console.log(interaction);
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-    // First, you need to get the matching command from the client.commands
-    const command = interaction.client.commands.get(interaction.commandName);
-
-	if (!command) {
-		console.error(`No command matching ${interaction.commandName} was found.`);
-		return;
+// Therefore, the client object exposes the .on() and .once() methods that you can use to register event listeners.
+// These methods take two arguments: the event name and a callback function. These are defined in your separate event files as name and execute.
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
 	}
+}
 
-    // With the right command identified, all that's left to do is call the command's 
-    // .execute() method and pass in the interaction variable as its argument.
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-		}
-	}
+/* client.on('messageCreate', (message) => {
+    console.log(message.content);
 });
+ */
+client.login(token);
