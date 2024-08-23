@@ -34,9 +34,11 @@ for (const folder of commandFolders) {
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
 		const command = require(filePath);
+		
 		// Set a new item in the Collection with the key as the command name and the value as the exported module
         // For each file being loaded, check that it has at least the data and execute properties.
 		if ('data' in command && 'execute' in command) {
+			console.log(command.data.name);
 			client.commands.set(command.data.name, command);
 		} else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
@@ -52,15 +54,13 @@ const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'
 for (const file of eventFiles) {
 	const filePath = path.join(eventsPath, file);
 	const event = require(filePath);
-	if (event.once) {
+	if (event.name == "messageCreate") {
+		console.log(event.name);
+	} else if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
 	} else {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
 
-/* client.on('messageCreate', (message) => {
-    console.log(message.content);
-});
- */
 client.login(token);

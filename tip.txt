@@ -28,3 +28,7 @@ Global application commands will be available in all the guilds your application
 Modals
     You can have a maximum of five ActionRowBuilders per modal builder, and one TextInputBuilder within an ActionRowBuilder. 
     Currently, you can only use TextInputBuilders in modal action rows builders.
+
+MAKING A NEW Command (OR UPDATING NON-EXECUTE PARAMETERS)
+    Once you make a new file for a command (or update an old command), you have to run node deploy-commands.js.
+    This script is intended to be run separately, only when you need to make changes to your slash command definitions - you're free to modify parts such as the execute function as much as you like without redeployment.

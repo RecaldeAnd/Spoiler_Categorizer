@@ -87,10 +87,12 @@ client.on(Events.InteractionCreate, async interaction => {
 
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
-client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) return;
+client.on(Events.MessageCreate, async message => {
+	const pattern = /\|\|(.*?)\|\|/gs;
+	console.log("In Message Create");
 
-	if (interaction.commandName === 'ping') {
+	if (pattern.test(message.content)) {
+		console.log("In if statement");
 		const modal = new ModalBuilder()
 			.setCustomId('mySpoilerModal')
 			.setTitle('Spoiler Modal');
@@ -119,8 +121,10 @@ client.on(Events.InteractionCreate, async interaction => {
         // Add inputs to the modal
         modal.addComponents(firstActionRow, secondActionRow);
 
+		console.log("Before show modal");
+
         // Show the modal to the user
-        await interaction.showModal(modal);
+        await message.showModal(modal);
     }
 });
 
