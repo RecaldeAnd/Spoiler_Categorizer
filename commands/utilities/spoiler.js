@@ -33,6 +33,8 @@ module.exports = {
         // Search for a thread that matches what the user inputted as the title
         let thread = await spoiler_archive.threads.cache.find(x => x.name.toLowerCase() === title.toLowerCase());
 
+        // TODO: not sure where to do it, but make sure to unarchive threads if they are archived. Test by making a thread, archiving it, and then using the slash command to send a new message there.
+
         // If the search was successful and an existing thread was found, skip to the end and send the spoiler message in that thread
         // else if the thread was not found, create a thread with the title of the book and send the message there
         if (thread) {

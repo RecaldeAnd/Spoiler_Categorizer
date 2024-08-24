@@ -5,7 +5,7 @@ const { Events } = require('discord.js');
 module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {
-		if (interaction.isChatInputCommand()) {
+		if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) {
 
 			const command = interaction.client.commands.get(interaction.commandName);
 
@@ -24,11 +24,6 @@ module.exports = {
 					await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 				}
 			}
-		} else if (interaction.isUserContextMenuCommand()) {
-			// Get the User's username from context menu
-			const { username } = interaction.targetUser;
-			console.log(username);
-			console.log(interaction);
 		}
 	},
 };
