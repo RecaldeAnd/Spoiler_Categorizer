@@ -5,98 +5,123 @@ module.exports = {
         .setName('Archive Spoiler')
         .setType(ApplicationCommandType.Message),
     async execute(interaction) {
+        // Get the target spoiler message and let the user know to check their dms
         const spoiler = interaction.targetMessage;
-        const message = await interaction.reply({
+        await interaction.reply({
             content: 'I\'ve slid into your dms... 😏',
             ephemeral: true
         });
 
-        setTimeout(() => {
-            message.delete().catch(console.error);
-        }, 10000); // Time in milliseconds
-
+        // Setup to send a dm to user who activated the command
         const user = interaction.user;
-        const dmChannel = await user.createDM();
+        const dm_channel = await user.createDM();
 
-        // Get the spoiler-archive channel that should be pre-existing in the server
-        const spoiler_archive = interaction.guild.channels.cache.find(i => i.name === 'spoiler-archive')
+        // Get the spoiler-archive channel or create one if it doesn't exist
+        let spoiler_archive = interaction.guild.channels.cache.find(i => i.name === 'spoiler-archive')
+
+        if (spoiler_archive) {
+        } else {
+            let channel_options = {
+                type: 'GUILD_TEXT', // or 'GUILD_VOICE', 'GUILD_CATEGORY', etc.
+                name: 'spoiler-archive', // Name of the new channel
+                topic: 'This channel is for users to look through once they\'ve finished a book that other\'s have talked about', // Optional: Only for text channels
+                reason: 'This bot needs a channel to send the spoilers into', // Optional: Reason for creating the channel
+            };
+
+            // This creates the channel with the above options. Consider only giving admins permissions here
+            spoiler_archive = interaction.guild.channels.create(channel_options);
+        }
 
         // Get all the active threads in the spoiler-archive channel
-        const activeThreads = await spoiler_archive.threads.fetchActive();
-        const activeThreadArray = Array.from(activeThreads.threads.values());
-        for (var thread of activeThreadArray) {
+        const active_threads = await spoiler_archive.threads.fetchActive();
+        const active_thread_array = Array.from(active_threads.threads.values());
+
+        // Loop through active threads and set new property that holds the time
+        // stamp of last message sent (or thread creation if not messages found).
+        // Then sort on latest message time to order the list of threads by most
+        // recently active.
+        for (var thread of active_thread_array) {
             try {
+                // Get latest message and get it's timestamp (.createdAt)
                 const messages = await thread.messages.fetch({ limit: 1 });
                 const lastMessage = messages.first();
                 thread.lastMessageAt = messages.first() ? lastMessage.createdAt : thread.createdAt;
-                //console.log(`Thread Name: ${thread.name}, Last Message At: ${thread.lastMessageAt}`);
             } catch (error) {
                 console.error(`Failed to fetch messages for thread ${thread.id}:`, error);
             }
         }
-
-        const sortedActiveThreads = activeThreadArray.sort((a, b) => b.lastMessageAt - a.lastMessageAt);
+        const sorted_active_threads = active_thread_array.sort((a, b) => b.lastMessageAt - a.lastMessageAt);
 
         // Get all the archive threads in the spoiler-archive channel
-        const archivedThreads = await spoiler_archive.threads.fetchArchived({
+        const archived_threads = await spoiler_archive.threads.fetchArchived({
             limit: 100, // Adjust the limit as needed
             before: new Date() // Fetch threads before the current time
         });
-        let archivedThreadsArray = Array.from(archivedThreads.threads.values());
+        let archived_threads_array = Array.from(archived_threads.threads.values());
 
-        // Combine both thread lists into one list (the threadsArray in between may be redundant)
-        const allThreads = [...sortedActiveThreads, ...archivedThreadsArray];
+        // Combine both thread lists into one list
+        const all_threads = [...sorted_active_threads, ...archived_threads_array];
 
         // Create select menu options from threads
-        const options = allThreads.map(thread => ({
-            label: thread.name,
-            value: thread.id,
-            description: `This is probably a book`
+        const options = all_threads.map(thread => ({
+            label: thread.name, // what the user sees
+            value: thread.id // the value I will work with
         }));
 
-        const selectMenu = new StringSelectMenuBuilder()
+        // Create the select menu and the add book button
+        const select_menu = new StringSelectMenuBuilder()
             .setCustomId('select_option')
-            .setPlaceholder('Select an option')
+            .setPlaceholder('Select A Book 📚')
             .addOptions(options);
 
-        const newThreadButton = new ButtonBuilder()
+        const add_book_button = new ButtonBuilder()
             .setCustomId('new_thread')
             .setLabel('Add Book')
-            .setStyle(ButtonStyle.Primary);
+            .setStyle(ButtonStyle.Success);
 
-        // For whatever reason, when you tried making 1 action row with both components, it triggered a width
-        // error with specifically the button
+        // For whatever reason, when you tried making 1 action row with both 
+        // components, it triggered a width error with specifically the button
         const menu = new ActionRowBuilder()
-            .addComponents(selectMenu);
+            .addComponents(select_menu);
 
         const button = new ActionRowBuilder()
-            .addComponents(newThreadButton);
+            .addComponents(add_book_button);
 
-        // Send message with select menu
-        await dmChannel.send({
+        // Send message with select menu and button as 2 different action rows
+        let menu_message = await dm_channel.send({
             content: 'What is the title of the book?',
             components: [menu, button],
         });
 
-        // Await user's selection
+        // Promise ensures we wait until the variable is set before we use it.
+        // resolve what we use to return a good value
+        // reject is what we use to return an error
         let target_thread = await new Promise((resolve, reject) => {
+            // the filter determines the messages that the collector will accept
+            // The collector is a message listener
             const filter = i => i.user.id === user.id;
-            const collector = dmChannel.createMessageComponentCollector({ filter, time: 30000 }); // 60 seconds
+            const collector = dm_channel.createMessageComponentCollector({ filter, time: 30000 }); // 30 seconds
 
+            // 'collect' is an event, thus on an event we recieve collected and
+            // run the following lambda
             collector.on('collect', async collected => {
-
                 if (collected.isButton()) {
                     // Right now this will always succeed but its good to have for future development changes
                     if (collected.customId === 'new_thread') {
-                        collected.update({ components: [] });
-                        resolve(collected.customId);
+                        // Get rid of the previous message as it is no longer necessary
+                        await menu_message.delete();
+                        resolve(collected.customId); // return 'new_thread'
+                        
                         // Clean up
                         collector.stop();
                     }
                 } else {
+                    // Get the value selected and the thread that it corresponds to
                     const selectedThreadId = collected.values[0];
                     const thread = spoiler_archive.threads.cache.get(selectedThreadId);
 
+                    // If the thread exists (and it really should at this point),
+                    // return it with resolve() and update the menu message
                     if (thread) {
                         await collected.update({ content: `You selected thread: ${thread.name}`, components: [] });
 
@@ -111,31 +136,37 @@ module.exports = {
                 }
             });
 
+            // Error handling if a response is not received in time
             collector.on('end', (collected, reason) => {
                 if (reason === 'time') {
-                    dmChannel.send('You did not select a thread in time.');
+                    dm_channel.send('You did not select a thread in time.');
                     reject(new Error('You did not select a thread in time.'));
                 }
             });
         });
 
+        // If the user clicked the "Add book" button, enter the branch
         if (typeof target_thread === 'string' && target_thread === 'new_thread') {
             let title = await new Promise((resolve, reject) => {
+                // the filter determines the messages that the collector will 
+                // accept. We are waiting for the first message and returning
                 const collectorFilter = m => interaction.user.id === m.author.id;
-                dmChannel.send("Please enter the title of this new book/media:");
+                dm_channel.send(`📝 Please enter the title of this new book/media:`);
 
-                dmChannel.awaitMessages({ filter: collectorFilter, time: 20_000, max: 1, errors: ['time'] })
+                dm_channel.awaitMessages({ filter: collectorFilter, time: 20_000, max: 1, errors: ['time'] })
                     .then(messages => {
                         resolve(messages.first().content);
                     })
                     .catch(() => {
-                        dmChannel.send('You did not provide a response in time.');
+                        dm_channel.send('You did not provide a response in time.');
                         reject(new Error('No response was provided in time'));
                     });
             });
 
+            // Before we create a new thread, check that it doesn't already
+            // exist. If it doesn't, then create it. Otherwise, return the existing thread.
             const local_threads = await spoiler_archive.threads.fetch();
-            let found_thread = local_threads.threads.find(thread => thread.name === title);
+            let found_thread = local_threads.threads.find(thread => thread.name.toLowerCase() === title.toLowerCase());
             if (found_thread) {
                 target_thread = found_thread;
             } else {
@@ -148,7 +179,8 @@ module.exports = {
         }
 
         // TODO: color the persons username/capitalize it correctly
-        // Check to see if the message is spoiler wrapped, if it isn't then make sure to wrap it... this may prove troublesome long term but its safer
+        // Check to see if the message is spoiler wrapped, if it isn't then make
+        // sure to wrap it... this may prove troublesome long term but its safer
         const author = interaction.targetMessage.author.username;
         const pattern = /\|\|(.*?)\|\|/gs;
         if (pattern.test(spoiler)) {
@@ -161,7 +193,7 @@ module.exports = {
             }
         }
         
-        dmChannel.send({
+        dm_channel.send({
             content: `Archived 🫡`,
             ephemeral: true
         });
