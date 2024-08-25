@@ -76,6 +76,7 @@ module.exports = {
             value: thread.id // the value I will work with
         }));
 
+        // If options is empty, add an option to avoid errors and prompt user to add book
         let placeholder_text = 'Select A Book 📚';
         if (options.length === 0) {
             options.push({
@@ -148,7 +149,7 @@ module.exports = {
                         // Clean up
                         collector.stop();
                     } else {
-                        await collected.update({ content: 'Thread not found.', components: [] });
+                        await collected.update({ content: 'Thread not found ❌', components: [] });
                         reject(new Error('Thread not found.'));
                         collector.stop();
                     }
@@ -158,7 +159,7 @@ module.exports = {
             // Error handling if a response is not received in time
             collector.on('end', (collected, reason) => {
                 if (reason === 'time') {
-                    dm_channel.send('You did not select a thread in time.');
+                    dm_channel.send('You did not select a thread in time ⌛');
                     reject(new Error('You did not select a thread in time.'));
                 }
             });
@@ -177,7 +178,7 @@ module.exports = {
                         resolve(messages.first().content);
                     })
                     .catch(() => {
-                        dm_channel.send('You did not provide a response in time.');
+                        dm_channel.send('You did not provide a response in time ⌛');
                         reject(new Error('No response was provided in time'));
                     });
             });
