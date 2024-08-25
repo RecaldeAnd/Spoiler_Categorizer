@@ -26,16 +26,29 @@ module.exports = {
         // TODO: try to get the threads in order of most active to least active
         // Get all the active threads in the spoiler-archive channel
         const activeThreads = await spoiler_archive.threads.fetchActive();
+        const activeThreadArray = Array.from(activeThreads.threads.values());
+        for (var thread of activeThreadArray) {
+            try {
+                const messages = await thread.messages.fetch({ limit: 1 });
+                const lastMessage = messages.first();
+                thread.lastMessageAt = messages.first() ? lastMessage.createdAt : thread.createdAt;
+                console.log(`Thread Name: ${thread.name}, Last Message At: ${thread.lastMessageAt}`);
+            } catch (error) {
+                console.error(`Failed to fetch messages for thread ${thread.id}:`, error);
+            }
+        }
+
+        const sortedActiveThreads = activeThreadArray.sort((a, b) => b.lastMessageAt - a.lastMessageAt);
 
         // Get all the archive threads in the spoiler-archive channel
         const archivedThreads = await spoiler_archive.threads.fetchArchived({
             limit: 100, // Adjust the limit as needed
             before: new Date() // Fetch threads before the current time
         });
+        let archivedThreadsArray = Array.from(archivedThreads.threads.values());
 
-        // Combine both thread lists into one list
-        const allThreads = [...activeThreads.threads.values(), ...archivedThreads.threads.values()];
-        const threadsArray = Array.from(allThreads);
+        // Combine both thread lists into one list (the threadsArray in between may be redundant)
+        const allThreads = [...sortedActiveThreads, ...archivedThreadsArray];
 
         // Create select menu options from threads
         const options = allThreads.map(thread => ({
@@ -43,6 +56,13 @@ module.exports = {
             value: thread.id,
             description: `This is probably a book`
         }));
+
+        // Add the "New" option
+        options.push({
+            label: 'New Book/Media',
+            value: 'new_thread', // Use a unique value to identify this option
+            description: 'Create a new thread'
+        });
 
         const selectMenu = new StringSelectMenuBuilder()
             .setCustomId('select_option')
@@ -54,7 +74,7 @@ module.exports = {
 
         // Send message with select menu
         // TODO: Add a button here maybe that then asks for a new book title if one doesn't exist
-        const response = await dmChannel.send({
+        await dmChannel.send({
             content: 'What is the title of the book?',
             components: [row],
         });
@@ -75,6 +95,11 @@ module.exports = {
 
                     // Clean up
                     collector.stop();
+                } else if (selectedThreadId === 'new_thread') {
+                    collected.update({ components: [] });
+                    resolve(selectedThreadId);
+                    // Clean up
+                    collector.stop();
                 } else {
                     await collected.update({ content: 'Thread not found.', components: [] });
                     reject(new Error('Thread not found.'));
@@ -89,17 +114,14 @@ module.exports = {
             });
         });
 
-        console.log(response);
-        
-        let new_book = false;
-        if (new_book) {
+        if (typeof target_thread === 'string' && target_thread === 'new_thread') {
             // ASSUMING THE OPTIONS WORKS OUT: Convert this to only run if the thread doesn't exist already
             let title = await new Promise((resolve, reject) => {
                 const collectorFilter = m => interaction.user.id === m.author.id;
+                dmChannel.send("Please enter the title of this new book/media:");
 
                 dmChannel.awaitMessages({ filter: collectorFilter, time: 20_000, max: 1, errors: ['time'] })
                     .then(messages => {
-                        dmChannel.send(`Archived 🫡`);
                         resolve(messages.first().content);
                     })
                     .catch(() => {
@@ -115,27 +137,22 @@ module.exports = {
             });
         }
 
-        //console.log(`${title}: ${spoiler}`);
-
-        // Search for a thread that matches what the user inputted as the title
-        // let target_thread = await allThreads.cache.find(x => x.name.toLowerCase() === title.toLowerCase());
-
-        // TODO: not sure where to do it, but make sure to unarchive threads if they are archived. Test by making a thread, archiving it, and then using the slash command to send a new message there.
-
-        // If the search was successful and an existing thread was found, skip to the end and send the spoiler message in that thread
-        // else if the thread was not found, create a thread with the title of the book and send the message there
-        // if (target_thread) {
-        // } else {
-        //     // Wrap in try catch, if the name of the thread does not work, catch the error
-        //     target_thread = await spoiler_archive.threads.create({
-        //         name: `${title}`,
-        //         autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
-        //         reason: `New spoilers were added about ${title}`,
-        //     });
-        // }
-
         // TODO: color the persons username/capitalize it correctly
-        // Spoiler is not wrapped in |||| because it is assumed they invoking this command on an already censor'd message
-        target_thread.send(`${interaction.member.nickname}:\n${spoiler}`);
+        // Check to see if the message is spoiler wrapped, if it isn't then make sure to wrap it... this may prove troublesome long term but its safer
+        const pattern = /\|\|(.*?)\|\|/gs;
+        if (pattern.test(spoiler)) {
+            target_thread.send(`${interaction.member.nickname}:\n${spoiler}`);
+        } else {
+            if (spoiler.content.endsWith("||")) {
+                target_thread.send(`${interaction.member.nickname}:\n||${spoiler}`);
+            } else {
+                target_thread.send(`${interaction.member.nickname}:\n||${spoiler}||`);
+            }
+        }
+        
+        dmChannel.send({
+            content: `Archived 🫡`,
+            ephemeral: true
+        });
     },
 };
