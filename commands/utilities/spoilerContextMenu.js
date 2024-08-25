@@ -1,4 +1,4 @@
-const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -22,14 +22,22 @@ module.exports = {
         if (spoiler_archive) {
         } else {
             let channel_options = {
-                type: 'GUILD_TEXT', // or 'GUILD_VOICE', 'GUILD_CATEGORY', etc.
                 name: 'spoiler-archive', // Name of the new channel
+                type: ChannelType.GuildText, // or 'GUILD_VOICE', 'GUILD_CATEGORY', etc.
                 topic: 'This channel is for users to look through once they\'ve finished a book that other\'s have talked about', // Optional: Only for text channels
                 reason: 'This bot needs a channel to send the spoilers into', // Optional: Reason for creating the channel
             };
 
             // This creates the channel with the above options. Consider only giving admins permissions here
-            spoiler_archive = interaction.guild.channels.create(channel_options);
+            spoiler_archive = await new Promise((resolve, reject) => {
+                let channel = interaction.guild.channels.create(channel_options);
+
+                if (channel) {
+                    resolve(channel);
+                } else {
+                    reject(new Error('Channel could not be created!'));
+                }
+            });
         }
 
         // Get all the active threads in the spoiler-archive channel
@@ -68,10 +76,20 @@ module.exports = {
             value: thread.id // the value I will work with
         }));
 
+        let placeholder_text = 'Select A Book 📚';
+        if (options.length === 0) {
+            options.push({
+                label: 'CLICK ADD BOOK BUTTON',
+                value: 'new_thread'
+            });
+
+            placeholder_text = '🔽 CLICK ADD BOOK BUTTON 🔽'
+        }
+
         // Create the select menu and the add book button
         const select_menu = new StringSelectMenuBuilder()
             .setCustomId('select_option')
-            .setPlaceholder('Select A Book 📚')
+            .setPlaceholder(placeholder_text)
             .addOptions(options);
 
         const add_book_button = new ButtonBuilder()
@@ -132,6 +150,7 @@ module.exports = {
                     } else {
                         await collected.update({ content: 'Thread not found.', components: [] });
                         reject(new Error('Thread not found.'));
+                        collector.stop();
                     }
                 }
             });
