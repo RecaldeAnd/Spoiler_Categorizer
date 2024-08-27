@@ -1,6 +1,9 @@
 // This file will be used to register and update the slash commands for your bot application.
 const { REST, Routes } = require('discord.js');
-const { clientId, guildId, token } = require('./config.json');
+require('dotenv').config();
+const clientId	= process.env.CLIENT_ID;
+const guildId	= process.env.GUILD_ID;
+const token		= process.env.TOKEN;
 const fs = require('node:fs');
 const path = require('node:path');
 
