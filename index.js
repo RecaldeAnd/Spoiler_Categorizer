@@ -6,7 +6,8 @@ const fs = require('node:fs');
 //One of the advantages of the path module is that it automatically detects the operating system and uses the appropriate joiners.
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
+require('dotenv').config();
+const token	= process.env.TOKEN;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages] });
 
