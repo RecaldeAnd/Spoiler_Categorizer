@@ -12,3 +12,19 @@ CONSIDER MAKING THE SPOILER-ARCHIVE A FORUM CHANNEL (THIS WILL LIKELY REQUIRE A 
 
 HAVE IT MANAGE ROLES. ONE COMMAND ASKS USER TO SELECT A ROLE OR MAKE A ROLE (THE NAME OF THE BOOK THEY'RE READING). THEN WHEN USING THE OTHER COMMAND, IT WILL EITHER AUTO-POST TO THE USER'S ROLE'S BOOK 
 THREAD OR NOT BOTHER MESSAGING THE USER IF THEIR ROLE IS SET. SUB-FUNCTIONALITY: HAVE THE BOT CHECK THE BOOK ROLES AT THE END OF THE MONTH AND DELETE THE ROLE IF NO ONE CURRENTLY HAS THAT ROLE.
+
+remove the book name before the colon if it matches the name of the thread
+
+better formatting (coloring and proper username capitalization) for the thread posts
+
+Look into better role management (ie it looks like you can set roles to bot managable, so you could potentially make all the roles you don't want the bot to mess with 
+just not bot editable and make sure the new roles you make are bot editable)
+
+Short Term Actual TODO:
+Have the role assigner then create a thread that matches the role name.
+Have an role unassigner command
+(Really consider the above long term TODO of modularizing the calls, don't worry about header files)
+Update archiveSpoiler.js to auto post to the thread that matches your book role. You'll have to do the same role filtering you did in the role assigners. Then consider doing a check that the user is only assigned to one book role
+and thow an error message/message the user that they are assigned to more than one book so the auto-assign will not work. ALSO, I guess you could just run the normal functionality of the archiver command if this happens and maybe
+inform the user of the error in all caps before displaying them with the classic menu
+Too tired to think if I'm missing anything for this short term todo, but will push now
