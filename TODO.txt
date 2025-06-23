@@ -22,7 +22,6 @@ just not bot editable and make sure the new roles you make are bot editable)
 
 Short Term Actual TODO:
 Have the role assigner then create a thread that matches the role name.
-Have an role unassigner command
 (Really consider the above long term TODO of modularizing the calls, don't worry about header files)
 Update archiveSpoiler.js to auto post to the thread that matches your book role. You'll have to do the same role filtering you did in the role assigners. Then consider doing a check that the user is only assigned to one book role
 and thow an error message/message the user that they are assigned to more than one book so the auto-assign will not work. ALSO, I guess you could just run the normal functionality of the archiver command if this happens and maybe
