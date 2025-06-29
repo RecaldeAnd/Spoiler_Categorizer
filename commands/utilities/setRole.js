@@ -24,7 +24,6 @@ module.exports = {
         }));
 
         print_array(all_roles, "all_roles");
-        // may have to add everyone here if it seems to be throwing random errors later
         let non_book_roles = ["Book Buying Ban", "#1 Dark Age Jorker (before Austin)", "#1 Red Rising Jorker", "#1 Global Name of the Wind Hater", "#1 Global Iron Gold Hater", "Morbidly Curious", "Spoiler-Archivist", "Spoiler-Organizer", "@everyone"];
 
         // Search for each role in the non_book_roles array and remove each of those roles from the all_roles array (this will likely empty MOST of the all_roles array everytime and honestly this is only useful for conveniently displaying a book someone else is currently reading)

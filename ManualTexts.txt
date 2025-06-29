@@ -1,0 +1,9 @@
+Test Ideas/Suite for Discord bot
+Start with no role, use Archiver, existing book
+No role, use Archiver, new book
+No role, use Archiver, select the book you just made
+
+Set role, existing role, use Archiver
+Remove previous role, set new role, use archiver
+Set another role, existing, use archiver
+Remove one of the roles, set new role, use archiver

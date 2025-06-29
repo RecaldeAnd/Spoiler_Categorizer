@@ -7,7 +7,7 @@
     "deploy-commands": "node deploy-commands.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Psyders",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.15.3",
