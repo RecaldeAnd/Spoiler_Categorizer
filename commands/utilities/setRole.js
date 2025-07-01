@@ -164,7 +164,8 @@ module.exports = {
                 target_role = found_role; // This will set target_role to a chopped version of the official role obj that I made because its from the book_roles array
             } else {
                 target_role = await interaction.guild.roles.create({
-                    name: `${title}`
+                    name: `${title}`,
+                    color: 0x7b08ff     // Bluish-Purple hopefully
                 });
             }
         }
