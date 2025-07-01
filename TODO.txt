@@ -20,10 +20,19 @@ better formatting (coloring and proper username capitalization) for the thread p
 Look into better role management (ie it looks like you can set roles to bot managable, so you could potentially make all the roles you don't want the bot to mess with 
 just not bot editable and make sure the new roles you make are bot editable)
 
+Consider updating the spoiler archiver to simply get the list of roles the user has instead of all the threads in the Spoiler channel. AND, maybe a way to toggle this is to make the button for that menu say "Get All Threads"
+and then that server you a context menu with all the threads
+
+ALSO MAKE THE SET AND REMOVE ROLE COMMANDS SLASH COMMANDS
+
+COULD MAKE THE LIST OF THREADS TO POST TO JUST THE BOOK ROLES THAT THE USER HAS ASSIGNED TO IT. (THOUGH I WOULD LOVE TO MAKE THIS TOGGLEABLE IN GENERAL SOME HOW SO IT CAN BE TOGGLED ON A SERVER TO SERVER BASIS)
+
 Short Term Actual TODO:
-Have the role assigner then create a thread that matches the role name.
-(Really consider the above long term TODO of modularizing the calls, don't worry about header files)
-Update archiveSpoiler.js to auto post to the thread that matches your book role. You'll have to do the same role filtering you did in the role assigners. Then consider doing a check that the user is only assigned to one book role
+---- DONE? ---- Have the role assigner then create a thread that matches the role name. (There is actually no need to do this since the archiveSpoiler.js is already set up to create a thread if it doesn't exist.
+Lean on that for existing code.)
+---- DONE ---- Have an role unassigner command
+---- DONE ---- (Really consider the above long term TODO of modularizing the calls, don't worry about header files)
+---- DONE ---- Update archiveSpoiler.js to auto post to the thread that matches your book role. You'll have to do the same role filtering you did in the role assigners. Then consider doing a check that the user is only assigned to one book role
 and thow an error message/message the user that they are assigned to more than one book so the auto-assign will not work. ALSO, I guess you could just run the normal functionality of the archiver command if this happens and maybe
 inform the user of the error in all caps before displaying them with the classic menu
-Too tired to think if I'm missing anything for this short term todo, but will push now
+Add the non-book roles array to the .dotenv file somehow and pull the data from there. Mimic this for the heroku deployment.
