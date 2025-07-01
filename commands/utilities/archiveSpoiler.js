@@ -7,15 +7,6 @@ module.exports = {
         .setType(ApplicationCommandType.Message),
     async execute(interaction) {
         if (!interaction.isContextMenuCommand()) return;
-        // await interaction.reply({
-        //     content: `Looking for current reads... 📖🔍`,
-        //     ephemeral: true
-        // });
-        // await interaction.deferReply();
-        // await interaction.deferReply({ ephemeral: true });
-        // await interaction.deferReply({ flags: MessageFlags.Ephemeral })
-        // .then(console.log)
-        // .catch(console.error);
         // Get the target spoiler message. Grab the author of the message and set the pattern for proper spoiler tagging later
         const spoiler = interaction.targetMessage;
         const author = spoiler.author.username;
@@ -30,9 +21,7 @@ module.exports = {
         // Check if the user has exactly ONE book role (if more than one there's no way to know where they want to post the spoiler)
         const book_role = getCurrentRead(all_user_roles);
         console.log(`Current Read: ${book_role}`)
-        console.log(`Is interaction replied: ${interaction.replied} and Is interaction deferred: ${interaction.deferred}`)
         if (book_role != false) {
-            console.log("are we in the new functionality branch wtf");
             const spoiler_archive = await getOrMakeSpoilerArchiveChannel(interaction);
             const spoiler_thread = await getTargetThread(spoiler_archive, book_role.name);
             postSpoiler(author, pattern, spoiler, spoiler_thread);
@@ -41,15 +30,12 @@ module.exports = {
                 content: `Your spoiler has been posted to the ${book_role.name} thread in the Spoiler Archive! 📜`,
                 ephemeral: true
             });
-            // await interaction.editReply(`Your spoiler has been posted to the ${book_role.name} thread in the Spoiler Archive! 📜`);
 
         } else {
-            console.log("are we entering this fucking branch");
             await interaction.reply({
                 content: 'I\'ve slid into your dms... 😏',
                 ephemeral: true
             });
-            // await interaction.editReply('I\'ve slid into your dms... 😏');
     
             // Setup to send a dm to user who activated the command
             const user = interaction.user;
