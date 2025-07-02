@@ -1,5 +1,5 @@
 const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags } = require('discord.js');
-const { getCurrentRead, getTargetThread, postSpoiler, getOrMakeSpoilerArchiveChannel } = require('../../helpers/helperLib');
+const { getCurrentReads, getTargetThread, postSpoiler, getOrMakeSpoilerArchiveChannel, print_array, findOrCreateThreadByName} = require('../../helpers/helperLib');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -19,9 +19,10 @@ module.exports = {
         }));
         
         // Check if the user has exactly ONE book role (if more than one there's no way to know where they want to post the spoiler)
-        const book_role = getCurrentRead(all_user_roles);
-        console.log(`Current Read: ${book_role}`)
-        if (book_role != false) {
+        let book_roles = getCurrentReads(all_user_roles);
+        print_array(book_roles, `Current Read(s)`);
+        if (book_roles.length == 1) {
+            const book_role = book_roles[0];
             const spoiler_archive = await getOrMakeSpoilerArchiveChannel(interaction);
             const spoiler_thread = await getTargetThread(spoiler_archive, book_role.name);
             postSpoiler(author, pattern, spoiler, spoiler_thread);
@@ -94,7 +95,7 @@ module.exports = {
     
             // Combine both thread lists into one list
             const all_threads = [...sorted_active_threads, ...archived_threads_array];
-    
+            
             // Create select menu options from threads
             const options = all_threads.map(thread => ({
                 label: thread.name, // what the user sees
@@ -161,8 +162,8 @@ module.exports = {
                         }
                     } else {
                         // Get the value selected and the thread that it corresponds to
-                        const selectedThreadId = collected.values[0];
-                        const thread = spoiler_archive.threads.cache.get(selectedThreadId);
+                        let selectedThreadId = collected.values[0];
+                        thread = spoiler_archive.threads.cache.get(selectedThreadId);
     
                         // If the thread exists (and it really should at this point),
                         // return it with resolve() and update the menu message
@@ -189,10 +190,10 @@ module.exports = {
                     }
                 });
             });
-    
+
             // If the user clicked the "Add book" button, enter the branch
             if (typeof target_thread === 'string' && target_thread === 'new_thread') {
-                let title = await new Promise((resolve, reject) => {
+                title = await new Promise((resolve, reject) => {
                     // the filter determines the messages that the collector will 
                     // accept. We are waiting for the first message and returning
                     const collectorFilter = m => interaction.user.id === m.author.id;
@@ -207,22 +208,10 @@ module.exports = {
                             reject(new Error('No response was provided in time'));
                         });
                 });
-    
-                // Before we create a new thread, check that it doesn't already
-                // exist. If it doesn't, then create it. Otherwise, return the existing thread.
-                const local_threads = await spoiler_archive.threads.fetch();
-                let found_thread = local_threads.threads.find(thread => thread.name.toLowerCase() === title.toLowerCase());
-                if (found_thread) {
-                    target_thread = found_thread;
-                } else {
-                    target_thread = await spoiler_archive.threads.create({
-                        name: `${title}`,
-                        autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
-                        reason: `New spoilers were added about ${title}`,
-                    });
-                }
+
+                target_thread = findOrCreateThreadByName(spoiler_archive, title);
             }
-    
+
             // TODO: color the persons username/capitalize it correctly
             // Ensure the spoiler is properly spoiler tagged
             // Pattern and Author are defined at the top

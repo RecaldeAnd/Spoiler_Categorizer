@@ -1,4 +1,5 @@
 const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
+const { getOrMakeSpoilerArchiveChannel, print_array, findOrCreateThreadByName} = require('../../helpers/helperLib');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -170,6 +171,11 @@ module.exports = {
             }
         }
 
+        // Get the spoiler archive channel to make sure the role has a corresponding thread.
+        // If there is not a corresponding thread, make the thread.
+        const spoiler_archive = await getOrMakeSpoilerArchiveChannel(interaction);
+        await findOrCreateThreadByName(spoiler_archive, target_role.name);
+
         // Add role to the user
         // console.log(`target_role: ${target_role}`);
         const member_promise = interaction.member.roles.add(target_role.id); // Need to explicitly send the id since it could be a POJO Role or the actual Discord.js Role
@@ -180,10 +186,3 @@ module.exports = {
         });
     },
 };
-
-function print_array(array, title) {
-    console.log(`${title}:`);
-    for(var obj of array) {
-        console.log(`${obj.name}`);
-    }
-}

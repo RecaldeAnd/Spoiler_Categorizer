@@ -6,14 +6,11 @@ function removeNonBookRoles(all_roles) {
     return all_roles;
 }
 
-function getCurrentRead(all_roles) {
+// This function is redundant and can be eliminated
+function getCurrentReads(all_roles) {
     const book_roles = removeNonBookRoles(all_roles);
     print_array(book_roles, "Book_roles_after_removal");
-    if (book_roles.length == 1) {
-        return book_roles[0];
-    }
-
-    return false;
+    return book_roles;
 }
 
 async function getTargetThread(spoiler_archive, title) {
@@ -81,4 +78,24 @@ function print_array(array, title) {
     }
 }
 
-module.exports = {removeNonBookRoles, getCurrentRead, getTargetThread, postSpoiler, getOrMakeSpoilerArchiveChannel};
+// TODO: Add dm message from bot to explicitly tell the user that the thread was found or created
+async function findOrCreateThreadByName(spoiler_archive, thread_name) {
+    // Before we create a new thread, check that it doesn't already
+    // exist. If it doesn't, then create it. Otherwise, return the existing thread.
+    const local_threads = await spoiler_archive.threads.fetch();
+    let found_thread = local_threads.threads.find(thread => thread.name.toLowerCase() === thread_name.toLowerCase());
+    let target_thread = {};
+    if (found_thread) {
+        target_thread = found_thread;
+    } else {
+        target_thread = await spoiler_archive.threads.create({
+            name: `${title}`,
+            autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+            reason: `New spoilers were added about ${thread_name} or its role was created`,
+        });
+    }
+
+    return target_thread;
+}
+
+module.exports = {removeNonBookRoles, getCurrentReads, getTargetThread, postSpoiler, getOrMakeSpoilerArchiveChannel, findOrCreateThreadByName, print_array};
