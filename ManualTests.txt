@@ -1,6 +1,7 @@
 Test Ideas/Suite for Discord bot:
 IN ALL CASES THE MOST RECENTLY POSTED TO THREAD SHOULD BE AT THE TOP OF THE LIST OF OPTIONS FOR THREADS
 IN ALL CASES PRESENTING ROLES, ONLY BOOK ROLES SHOULD BE PRESENTED TO THE USER
+SET NON-BOOK ROLE FROM MAIN SERVER TO USER FIRST 
 
 TEST 1
 Start with no role, use Archiver, existing book
@@ -16,10 +17,6 @@ No role, use Archiver, select the book you just made
 EXPECTED OUTCOME: Bot messages user, user is presented with all the book threads that exist, user selects the top option (verify that it is the book that was just added by previous test), message is posted 
 to that thread.
 
-TEST 8
-Remove all previous roles, set non-book role from main server, use archiver
-EXPECTED OUTCOME: Bot messages user, user is presented with all the book threads that exist, user selects existing thread, message is posted to that thread.
-
 TEST 4
 Set role, existing book role, use Archiver
 EXPECTED OUTCOME: Should set the user's role to that existing role. Then when using the Archiver, Bot instantly posts the message to the thread that matches the name of the user, if the thread doesn't exist, 
@@ -27,8 +24,13 @@ it should make it.
 
 TEST 5
 Remove previous role, set role Add Role Button, use archiver
-EXPECTED OUTCOME: Should present user with existing book roles the user has applied and remove the selected role from the user. Then when selecting a new role it should make the rule and apply it to the user. 
+EXPECTED OUTCOME: Should present user with existing book roles the user has applied and remove the selected role from the user. Then when selecting a new role it should make the role and apply it to the user. 
 Then the archiver should automatically post the message to that new thread.
+
+TEST 9
+Remove previous role, set role Add Role Button to existing thread that does NOT have an existing role, use archiver
+EXPECTED OUTCOME: Should present user with existing book roles the user has applied and remove the selected role from the user. Then when selecting a new role it should make the role and apply it to the user. 
+Then the archiver should automatically post the message to the existing thread (that previously did not have a role assigned to it).
 
 TEST 6
 Set another role, existing role/book, use archiver
@@ -40,3 +42,7 @@ Remove one of the roles, set role Add Role Button, use archiver
 EXPECTED OUTCOME: The user should be presented with the book roles they are assigned and then the role that is selected should be removed from the user. Then the user should be presented with all the book 
 roles as options with the "new role" button available. When the user selected the "new role" button, they will be prompted to type the name of the new book/role and they should be assigned said new role. Then TEST 6 outcome: (Should present user with all book roles to select from and then apply the selected role to the user. Then the archiver should message the user to ask what thread it would like to post to as 
 if there were no roles assigned (all threads presented including the "add book" button).)
+
+TEST 8
+Remove all roles, including non-book role added from main server, use archiver (reapply main server non-book role after)
+EXPECTED OUTCOME: Bot messages user, user is presented with all the book threads that exist, user selects existing thread, message is posted to that thread.
