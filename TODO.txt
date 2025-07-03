@@ -29,6 +29,9 @@ MAKE "ADD ROLE" PRESENT A LIST OF OPTIONS THAT INCLUDE ALL THE THREADS, AND ALSO
 
 COULD MAKE THE LIST OF THREADS TO POST TO JUST THE BOOK ROLES THAT THE USER HAS ASSIGNED TO IT. (THOUGH I WOULD LOVE TO MAKE THIS TOGGLEABLE IN GENERAL SOME HOW SO IT CAN BE TOGGLED ON A SERVER TO SERVER BASIS)
 
+IF YOU TRY TO MAKE THE NON-BOOK ROLES AN ENVIRONMENT VARIABLE, INSTEAD SEE IF YOU CAN JUST PULL THE ROLES THAT ARE MADE BY THE BOT. AND HAVE THE BOT ONLY WORK WITH ROLES ITS CREATED. So if someone made a book role for some reason,
+that would be improper use of the bot. You have to create roles with the "set role" function
+
 Short Term Actual TODO:
 ---- DONE? ---- Have the role assigner then create a thread that matches the role name. (There is actually no need to do this since the archiveSpoiler.js is already set up to create a thread if it doesn't exist.
 Lean on that for existing code.)
