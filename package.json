@@ -1,13 +1,13 @@
 {
   "name": "spoiler_categorizer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "deploy-commands": "node deploy-commands.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Psyders",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.15.3",
