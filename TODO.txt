@@ -8,9 +8,9 @@
 
 ---- CANCELED ---- SEARCH THREAD FOR THE MESSAGE THE BOT IS ABOUT TO POST, IF IT ALREADY EXISTS, DO NOT SEND THE MESSAGE AND NOTIFY THE USER
 
-CONSIDER MAKING THE SPOILER-ARCHIVE A FORUM CHANNEL (THIS WILL LIKELY REQUIRE A LOT OF CODE CHANGES AND LIKELY A SCRIPT THAT CONVERTS THE EXISTING SPOILER-ARCHIVE INTO FORUM POSTS (START WITH THIS))
+---- 3.0 ---- CONSIDER MAKING THE SPOILER-ARCHIVE A FORUM CHANNEL (THIS WILL LIKELY REQUIRE A LOT OF CODE CHANGES AND LIKELY A SCRIPT THAT CONVERTS THE EXISTING SPOILER-ARCHIVE INTO FORUM POSTS (START WITH THIS))
 
-SIMILAR TO THE ABOVE, CONVERT THIS PROJECT TO PYTHON. LIKELY AN EARLIER VERSION OF THE BOT IF IT CONTINUES GETTING MORE ADVANCED.
+---- ?.0 ---- SIMILAR TO THE ABOVE, CONVERT THIS PROJECT TO PYTHON. LIKELY AN EARLIER VERSION OF THE BOT IF IT CONTINUES GETTING MORE ADVANCED.
 
 ---- DONE ---- HAVE IT MANAGE ROLES. ONE COMMAND ASKS USER TO SELECT A ROLE OR MAKE A ROLE (THE NAME OF THE BOOK THEY'RE READING). THEN WHEN USING THE OTHER COMMAND, IT WILL EITHER AUTO-POST TO THE USER'S ROLE'S BOOK 
 THREAD OR NOT BOTHER MESSAGING THE USER IF THEIR ROLE IS SET. 
@@ -20,7 +20,7 @@ SUB-FUNCTIONALITY: HAVE THE BOT CHECK THE BOOK ROLES AT THE END OF THE MONTH AND
 ---- TARGET ---- remove the book name before the colon if it matches the name of the thread
 ---- TARGET ---- With this, proper formatting of input given to the bot when adding roles or books (Pascal Case with spaces between words of course)
 
----- TARGET ---- better formatting (coloring and proper username capitalization) for the thread posts
+---- IN PROGRESS ---- better formatting (coloring and proper username capitalization) for the thread posts (for color, you'll have to make the text into code text then use ansi coloring, ex: '```ansi\n\u001b[1;31mI\'ve slid into your dms... 😏```')
 
 Consider updating the spoiler archiver to simply get the list of roles the user has instead of all the threads in the Spoiler channel. AND, maybe a way to toggle this is to make the button for that menu say "Get All Threads"
 and then that server you a context menu with all the threads
@@ -36,7 +36,7 @@ that would be improper use of the bot. You have to create roles with the "set ro
 Look into better role management (ie it looks like you can set roles to bot managable, so you could potentially make all the roles you don't want the bot to mess with 
 just not bot editable and make sure the new roles you make are bot editable)
 
----- TARGET ---- SIMPLE: BOLD THE BOOK THREAD IN THE MESSAGE THE BOT SENDS TO THE USER SO ITS EASY TO FIND WHICH THREAD IS BEING POSTED TO
+---- DONE ---- SIMPLE: BOLD THE BOOK THREAD IN THE MESSAGE THE BOT SENDS TO THE USER SO ITS EASY TO FIND WHICH THREAD IS BEING POSTED TO
 
 ---- DONE ---- SETUP TEST BOT WHICH MEANS I NEED TO MAKE ANOTHER TEST BOT SO I CAN GET ANOTHER BOT ID SO I CAN RUN TESTS INDEPENDENT OF THE DEPLOYED CODE BOT
 
