@@ -69,6 +69,10 @@ module.exports = {
             // Get all the active threads in the spoiler-archive channel
             const active_threads = await spoiler_archive.threads.fetchActive();
             const active_thread_array = Array.from(active_threads.threads.values());
+
+            // Consider this format for printing the threads map to see if you can convert to using this format instead of
+            // converting to an array
+            console.log('Active Threads:', active_threads.threads.map(thread => thread.name));
     
             // Loop through active threads and set new property that holds the time
             // stamp of last message sent (or thread creation if not messages found).
@@ -209,7 +213,7 @@ module.exports = {
                         });
                 });
 
-                target_thread = findOrCreateThreadByName(spoiler_archive, title);
+                target_thread = await findOrCreateThreadByName(spoiler_archive, title);
             }
 
             // TODO: color the persons username/capitalize it correctly
