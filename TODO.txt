@@ -29,15 +29,6 @@ MAKE "ADD ROLE" PRESENT A LIST OF OPTIONS THAT INCLUDE ALL THE THREADS, AND ALSO
 
 COULD MAKE THE LIST OF THREADS TO POST TO JUST THE BOOK ROLES THAT THE USER HAS ASSIGNED TO IT. (THOUGH I WOULD LOVE TO MAKE THIS TOGGLEABLE IN GENERAL SOME HOW SO IT CAN BE TOGGLED ON A SERVER TO SERVER BASIS)
 
+Add the non-book roles array to the .dotenv file somehow and pull the data from there. Mimic this for the heroku deployment.
 IF YOU TRY TO MAKE THE NON-BOOK ROLES AN ENVIRONMENT VARIABLE, INSTEAD SEE IF YOU CAN JUST PULL THE ROLES THAT ARE MADE BY THE BOT. AND HAVE THE BOT ONLY WORK WITH ROLES ITS CREATED. So if someone made a book role for some reason,
 that would be improper use of the bot. You have to create roles with the "set role" function
-
-Short Term Actual TODO:
----- DONE? ---- Have the role assigner then create a thread that matches the role name. (There is actually no need to do this since the archiveSpoiler.js is already set up to create a thread if it doesn't exist.
-Lean on that for existing code.)
----- DONE ---- Have an role unassigner command
----- DONE ---- (Really consider the above long term TODO of modularizing the calls, don't worry about header files)
----- DONE ---- Update archiveSpoiler.js to auto post to the thread that matches your book role. You'll have to do the same role filtering you did in the role assigners. Then consider doing a check that the user is only assigned to one book role
-and thow an error message/message the user that they are assigned to more than one book so the auto-assign will not work. ALSO, I guess you could just run the normal functionality of the archiver command if this happens and maybe
-inform the user of the error in all caps before displaying them with the classic menu
-Add the non-book roles array to the .dotenv file somehow and pull the data from there. Mimic this for the heroku deployment.
