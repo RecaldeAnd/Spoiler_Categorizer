@@ -89,7 +89,7 @@ async function findOrCreateThreadByName(spoiler_archive, thread_name) {
         target_thread = found_thread;
     } else {
         target_thread = await spoiler_archive.threads.create({
-            name: `${title}`,
+            name: `${thread_name}`,
             autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
             reason: `New spoilers were added about ${thread_name} or its role was created`,
         });
