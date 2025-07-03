@@ -1,4 +1,5 @@
 const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags } = require('discord.js');
+const { blockQuote, bold, italic, quote, spoiler, strikethrough, underline, subtext } = require('discord.js');
 const { getCurrentReads, getTargetThread, postSpoiler, getOrMakeSpoilerArchiveChannel, print_array, findOrCreateThreadByName} = require('../../helpers/helperLib');
 
 module.exports = {
@@ -28,7 +29,7 @@ module.exports = {
             postSpoiler(author, pattern, spoiler, spoiler_thread);
 
             await interaction.reply({
-                content: `Your spoiler has been posted to the ${book_role.name} thread in the Spoiler Archive! 📜`,
+                content: `Your spoiler has been posted to the ${bold(book_role.name)} thread in the Spoiler Archive! 📜`,
                 ephemeral: true
             });
 
@@ -219,15 +220,7 @@ module.exports = {
             // TODO: color the persons username/capitalize it correctly
             // Ensure the spoiler is properly spoiler tagged
             // Pattern and Author are defined at the top
-            if (pattern.test(spoiler)) {
-                target_thread.send(`${author}:\n${spoiler}`);
-            } else {
-                if (spoiler.content.endsWith("||")) {
-                    target_thread.send(`${author}:\n||${spoiler}`);
-                } else {
-                    target_thread.send(`${author}:\n||${spoiler}||`);
-                }
-            }
+            postSpoiler(author, pattern, spoiler, target_thread);
             
             dm_channel.send({
                 content: `Archived 🫡`,

@@ -1,4 +1,5 @@
 const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
+const { blockQuote, bold, italic, quote, spoiler, strikethrough, underline, subtext } = require('discord.js');
 const non_book_roles = ["Book Buying Ban", "#1 Dark Age Jorker (before Austin)", "#1 Red Rising Jorker", "#1 Global Name of the Wind Hater", "#1 Global Iron Gold Hater", "Morbidly Curious", "Spoiler-Archivist", "Spoiler-Organizer", "@everyone"];
 
 function removeNonBookRoles(all_roles) {
@@ -31,13 +32,14 @@ async function getTargetThread(spoiler_archive, title) {
 }
 
 function postSpoiler(author, pattern, spoiler, target_thread) {
+    const author_bold = bold(author);
     if (pattern.test(spoiler)) {
-        target_thread.send(`${author}:\n${spoiler}`);
+        target_thread.send(`${author_bold}\n${spoiler}`);
     } else {
         if (spoiler.content.endsWith("||")) {
-            target_thread.send(`${author}:\n||${spoiler}`);
+            target_thread.send(`${author_bold}\n||${spoiler}`);
         } else {
-            target_thread.send(`${author}:\n||${spoiler}||`);
+            target_thread.send(`${author_bold}\n||${spoiler}||`);
         }
     }
 }
