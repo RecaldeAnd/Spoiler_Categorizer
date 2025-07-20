@@ -20,7 +20,7 @@ SUB-FUNCTIONALITY: HAVE THE BOT CHECK THE BOOK ROLES AT THE END OF THE MONTH AND
 ---- TARGET ---- remove the book name before the colon if it matches the name of the thread
 ---- TARGET ---- With this, proper formatting of input given to the bot when adding roles or books (Pascal Case with spaces between words of course)
 
----- IN PROGRESS ---- better formatting (coloring and proper username capitalization) for the thread posts (for color, you'll have to make the text into code text then use ansi coloring, ex: '```ansi\n\u001b[1;31mI\'ve slid into your dms... 😏```')
+---- IN PROGRESS ---- better formatting (coloring and proper username capitalization (try getting display name if you can differentiate it from the server name)) for the thread posts (for color, you'll have to make the text into code text then use ansi coloring, ex: '```ansi\n\u001b[1;31mI\'ve slid into your dms... 😏```')
 
 Consider updating the spoiler archiver to simply get the list of roles the user has instead of all the threads in the Spoiler channel. AND, maybe a way to toggle this is to make the button for that menu say "Get All Threads"
 and then that server you a context menu with all the threads
