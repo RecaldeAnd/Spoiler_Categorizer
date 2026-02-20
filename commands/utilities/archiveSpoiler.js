@@ -25,10 +25,10 @@ module.exports = {
             const book_role = book_roles[0];
             const spoiler_archive = await getOrMakeSpoilerArchiveChannel(interaction);
             const spoiler_thread = await getTargetThread(spoiler_archive, book_role.name);
-            postSpoiler(author, pattern, spoiler, spoiler_thread);
+            const spoiler_peek = postSpoiler(author, pattern, spoiler, spoiler_thread);
 
             await interaction.reply({
-                content: `Your spoiler has been posted to the ${book_role.name} thread in the Spoiler Archive! 📜`,
+                content: `"${spoiler_peek}" has been posted to the **${book_role.name}** thread in the Spoiler Archive! 📜`,
                 ephemeral: true
             });
 

@@ -9,7 +9,7 @@ function removeNonBookRoles(all_roles) {
 // This function is redundant and can be eliminated
 function getCurrentReads(all_roles) {
     const book_roles = removeNonBookRoles(all_roles);
-    print_array(book_roles, "Book_roles_after_removal");
+    print_array(book_roles, "Only User's Book Roles");
     return book_roles;
 }
 
@@ -30,6 +30,39 @@ async function getTargetThread(spoiler_archive, title) {
     return target_thread;
 }
 
+// Get a peek into the spoiler to print with the "Posted!" message
+function getSpoilerPeek(spoiler) {
+    // Convert "interaction.targetMessage" into string
+    let spoiler_string = `${spoiler}`
+
+    // Set up default values
+    let spoiler_peek      = "ERROR: Spoiler peek wasn't generated";
+    let peek_array        = [];
+    let elipse_or_nothing = '';
+    let pre_censored_text = "";
+
+    // Split spoiler around || to get 2 strings in an array that exclude ||
+    let spoiler_split_around_censor = spoiler_string.split("||", 2);
+    if (spoiler_split_around_censor[1] === undefined) {
+        peek_array               = spoiler_split_around_censor[0].split(" ", 6);
+    } else {
+        pre_censored_text        = spoiler_split_around_censor[0];
+        peek_array               = spoiler_split_around_censor[1].split(" ", 6); 
+    }
+
+    // Want 5 censored words, if there are 6 words replace 6th with "..." 
+    if (peek_array.length > 5) {
+        peek_array.pop();
+        elipse_or_nothing = "...";
+    }
+
+    // Concates all strings in array and separates them with a space instead of default ","
+    spoiler_peek = peek_array.join(" ");
+
+    return `*${pre_censored_text}${spoiler_peek}${elipse_or_nothing}*`; // pre_censored_test and elipse_or_nothing could be empty by design
+}
+
+// Also return the segment of the spoiler for the message back to the user
 function postSpoiler(author, pattern, spoiler, target_thread) {
     if (pattern.test(spoiler)) {
         target_thread.send(`${author}:\n${spoiler}`);
@@ -40,6 +73,8 @@ function postSpoiler(author, pattern, spoiler, target_thread) {
             target_thread.send(`${author}:\n||${spoiler}||`);
         }
     }
+
+    return getSpoilerPeek(spoiler);
 }
 
 async function getOrMakeSpoilerArchiveChannel(interaction) {

@@ -1,3 +1,5 @@
+// Make sure that the bot is higher than the book roles on the role hierarchy
+
 const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
 
 module.exports = {
