@@ -32,3 +32,8 @@ Modals
 MAKING A NEW Command (OR UPDATING NON-EXECUTE PARAMETERS)
     Once you make a new file for a command (or update an old command), you have to run node deploy-commands.js.
     This script is intended to be run separately, only when you need to make changes to your slash command definitions - you're free to modify parts such as the execute function as much as you like without redeployment.
+
+Old Version Data if Need To Revert if Update fails:
+Node:       v20.16.0
+discord.js: ^14.15.3
+env:        ^16.4.5

@@ -105,14 +105,6 @@ async function getOrMakeSpoilerArchiveChannel(interaction) {
     return spoiler_archive;
 }
 
-function print_array(array, title) {
-    console.log(`${title}:`);
-    for(var obj of array) {
-        console.log(`${obj.name}`);
-        // console.log(obj);
-    }
-}
-
 // TODO: Add dm message from bot to explicitly tell the user that the thread was found or created
 async function findOrCreateThreadByName(spoiler_archive, thread_name) {
     // Before we create a new thread, check that it doesn't already
@@ -131,6 +123,18 @@ async function findOrCreateThreadByName(spoiler_archive, thread_name) {
     }
 
     return target_thread;
+}
+
+// function getDateRoleWasCreated(role) {
+//     let role_creation_date = role.createdAt; // This access does not work... may need to use newest version of discord.js. Currently on 14.15.3
+//     console.log(`${role.name} was created on ${role_creation_date}`);
+// }
+
+function print_array(array, title) {
+    console.log(`${title}:`);
+    for(var obj of array) {
+        console.log(`${obj.name}`);
+    }
 }
 
 module.exports = {removeNonBookRoles, getCurrentReads, getTargetThread, postSpoiler, getOrMakeSpoilerArchiveChannel, findOrCreateThreadByName, print_array};
