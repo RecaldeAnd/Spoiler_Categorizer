@@ -1,4 +1,4 @@
-const { Events } = require('discord.js');
+const { Events, MessageFlags } = require('discord.js');
 
 // The name property states which event this file is for
 // The execute function holds your event logic, which will be called by the event handler whenever the event emits.
@@ -19,9 +19,9 @@ module.exports = {
 			} catch (error) {
 				console.error(error);
 				if (interaction.replied || interaction.deferred) {
-					await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+					await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 				} else {
-					await interaction.reply({ content: 'Interaction was not replied or deferred', ephemeral: true });
+					await interaction.reply({ content: 'Interaction was not replied or deferred', flags: MessageFlags.Ephemeral });
 				}
 			}
 		}

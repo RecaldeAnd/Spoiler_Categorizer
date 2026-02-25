@@ -1,6 +1,6 @@
 // Make sure that the bot is higher than the book roles on the role hierarchy
 
-const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
+const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -11,7 +11,7 @@ module.exports = {
         const spoiler = interaction.targetMessage;
         await interaction.reply({
             content: 'I\'ve slid into your dms... 😏',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
         
 
@@ -126,7 +126,7 @@ module.exports = {
     
         dm_channel.send({
             content: `Role ${target_role.name} Removed 🫡`,
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
     },
 };

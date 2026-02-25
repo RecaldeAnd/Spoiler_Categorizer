@@ -1,4 +1,4 @@
-const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
+const { ApplicationCommandType, ContextMenuCommandBuilder, ThreadAutoArchiveDuration, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags } = require('discord.js');
 const { getOrMakeSpoilerArchiveChannel, print_array, findOrCreateThreadByName} = require('../../helpers/helperLib');
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
         const spoiler = interaction.targetMessage;
         await interaction.reply({
             content: 'I\'ve slid into your dms... 😏',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
         
 
@@ -166,7 +166,9 @@ module.exports = {
             } else {
                 target_role = await interaction.guild.roles.create({
                     name: `${title}`,
-                    color: 0x7b08ff     // Bluish-Purple hopefully
+                    colors: {
+                        primaryColor: 0x7b08ff,     // Bluish-Purple hopefully
+                    }
                 });
             }
         }
@@ -182,7 +184,7 @@ module.exports = {
     
         dm_channel.send({
             content: `Role ${target_role.name} Assigned 🫡`,
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
     },
 };

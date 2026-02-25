@@ -29,13 +29,13 @@ module.exports = {
 
             await interaction.reply({
                 content: `"${spoiler_peek}" has been posted to the **${book_role.name}** thread in the Spoiler Archive! 📜`,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
 
         } else {
             await interaction.reply({
                 content: 'I\'ve slid into your dms... 😏',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
     
             // Setup to send a dm to user who activated the command
@@ -219,19 +219,11 @@ module.exports = {
             // TODO: color the persons username/capitalize it correctly
             // Ensure the spoiler is properly spoiler tagged
             // Pattern and Author are defined at the top
-            if (pattern.test(spoiler)) {
-                target_thread.send(`${author}:\n${spoiler}`);
-            } else {
-                if (spoiler.content.endsWith("||")) {
-                    target_thread.send(`${author}:\n||${spoiler}`);
-                } else {
-                    target_thread.send(`${author}:\n||${spoiler}||`);
-                }
-            }
-            
+            const spoiler_peek = postSpoiler(author, pattern, spoiler, target_thread);
+
             dm_channel.send({
-                content: `Archived 🫡`,
-                ephemeral: true
+                content: `"${spoiler_peek}" has been posted to the **${target_thread.name}** thread in the Spoiler Archive! 📜`,
+                flags: MessageFlags.Ephemeral
             });
         }
 

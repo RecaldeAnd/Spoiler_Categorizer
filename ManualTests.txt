@@ -58,3 +58,5 @@ TEST 8
 Remove all roles including non-book role added from main server, use archiver
 EXPECTED OUTCOME: Bot messages user, user is presented with all the book threads that exist, user selects existing thread, message is posted to that thread.
 ACTUAL OUTCOME: EXPECTED. (Manually posted in Fuck This)
+
+TODO: Add all the spoiler text formatting a user can do to the test variance. Just make sure you hit all of the above tests and also all of the spoiler text formatting tests. No need for permutations or anything, just any combo ensuring one of each

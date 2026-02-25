@@ -1,5 +1,5 @@
 // You'll be using the SlashCommandBuilder class to construct the command definitions.
-const { SlashCommandBuilder, ThreadAutoArchiveDuration } = require('discord.js');
+const { SlashCommandBuilder, ThreadAutoArchiveDuration, MessageFlags } = require('discord.js');
 
 // module.exports is how you export data in Node.js so that you can require() it in other files.
 module.exports = {
@@ -19,7 +19,7 @@ module.exports = {
                 .setRequired(true)),
     // Execute method contains the functionality to run from our event handler when the command is used
     async execute(interaction) {
-        await interaction.reply({ content: 'Spoiler was submitted!', ephemeral: true });
+        await interaction.reply({ content: 'Spoiler was submitted!', flags: MessageFlags.Ephemeral });
         
         let title = interaction.options.getString('title');
         // Figure out how to push this through to the same channel as a message sent by the user like the native spoiler command does
